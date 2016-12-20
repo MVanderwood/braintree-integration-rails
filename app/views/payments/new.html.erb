@@ -18,7 +18,7 @@
 <script src="https://js.braintreegateway.com/web/3.6.2/js/client.min.js"></script>
 <script src="https://js.braintreegateway.com/web/3.6.2/js/hosted-fields.min.js"></script>
 <script>
-  var form = document.getElementById('payment-form')
+  var form = document.getElementById('payment-form');
   var submit = document.getElementById('payment-submit');
   var errorDiv = document.getElementById('payment-error');
 
@@ -64,14 +64,20 @@
       }
 
       submit.removeAttribute('disabled');
-      form.addEventListener('submit', function(tokenizeError, payload) {
-        if (tokenizeError) {
-          window.error = tokenizeError;
-        }
-        window.payload = payload;
-        document.getElementById('payment-method-nonce').value = payload.nonce;
-        form.submit();
-      }, false);
+
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        hostedFieldInstance.tokenize(function(tokenError, payload) {
+          if (tokenError) {
+            errorDiv.innerHTML = 'token error';
+            return;
+          }
+
+          document.getElementsByName('payment-method-nonce')[0].value = payload.nonce;
+          form.submit();
+        })
+      }, false)
     })
   });
 </script>

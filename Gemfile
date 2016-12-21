@@ -17,10 +17,10 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.5.0'
   gem 'rails-controller-testing'
   gem 'factory_girl_rails', '~> 4.4.1'
+  gem 'pry-rails'
 end
 
 group :development do
-  gem 'pry-rails'
   gem 'listen', '~> 3.0.5'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'

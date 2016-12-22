@@ -13,4 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require braintree/client.min.js
+//= require braintree/hosted-fields.min.js
 //= require_tree .

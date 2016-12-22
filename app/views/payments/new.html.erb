@@ -10,72 +10,11 @@
   <label for="expiration-date">Expiration Date</label>
   <div class="hosted-field" id="expiration-date"></div>
 
-  <input type="hidden" name="payment-method-nonce">
+  <input id="nonce-input" type="hidden" name="payment-method-nonce">
   <input id="payment-submit" type="submit" value="Pay $10" disabled>
 
 <% end %>
 
-<script>
-  var form = document.getElementById('payment-form');
-  var submit = document.getElementById('payment-submit');
-  var errorDiv = document.getElementById('payment-error');
-
-  braintree.client.create({
-    authorization: '<%= @client_token %>'
-  }, function(clientError, clientInstance) {
-    if (clientError) {
-      errorDiv.innerHTML = 'error in payment';
-      return;
-    }
-
-    braintree.hostedFields.create({
-      client: clientInstance,
-      styles: {
-        'input': {
-          'font-size': '14pt'
-        },
-        'input.invalid': {
-          'color': 'red'
-        },
-        'input.valid': {
-          'color': 'green'
-        }
-      },
-      fields: {
-        number: {
-          selector: '#card-number',
-          placeholder: '4111 1111 1111 1111'
-        },
-        cvv: {
-          selector: '#cvv',
-          placeholder: '123'
-        },
-        expirationDate: {
-          selector: '#expiration-date',
-          placeholder: '10/2019'
-        }
-      }
-    }, function(hostedFieldError, hostedFieldInstance) {
-      if (hostedFieldError) {
-        errorDiv.innerHTML = 'error with hosted fields';
-        return;
-      }
-
-      submit.removeAttribute('disabled');
-
-      form.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        hostedFieldInstance.tokenize(function(tokenError, payload) {
-          if (tokenError) {
-            errorDiv.innerHTML = 'token error';
-            return;
-          }
-
-          document.getElementsByName('payment-method-nonce')[0].value = payload.nonce;
-          form.submit();
-        })
-      }, false)
-    })
-  });
-</script>
+<%= javascript_tag do %>
+  new BTPayment('<%= @client_token %>');
+<% end %>
